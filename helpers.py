@@ -1,14 +1,15 @@
 import os
 import random
 from datetime import datetime
-from urlparse import urlparse
+from urllib.parse import urlparse
+#from urlparse import urlparse
 
 import eventlet
 requests = eventlet.import_patched('requests.__init__')
 time = eventlet.import_patched('time')
 import redis
-
-from BeautifulSoup import BeautifulSoup
+from bs4 import BeautifulSoup
+#from BeautifulSoup import BeautifulSoup
 from requests.exceptions import RequestException
 
 import settings
@@ -20,7 +21,7 @@ redis = redis.StrictRedis(host=settings.redis_host, port=settings.redis_port, db
 
 def make_request(url, return_soup=True):
     # global request building and response handling
-
+    print(url)
     url = format_url(url)
 
     if "picassoRedirect" in url:
@@ -45,7 +46,7 @@ def make_request(url, return_soup=True):
         return None
 
     if return_soup:
-        return BeautifulSoup(r.text), r.text
+        return BeautifulSoup(r.text, 'html5lib'), r.text
     return r
 
 
@@ -54,7 +55,7 @@ def format_url(url):
     u = urlparse(url)
 
     scheme = u.scheme or "https"
-    host = u.netloc or "www.amazon.com"
+    host = u.netloc or "www.amazon.in"
     path = u.path
 
     if not u.query:
@@ -62,6 +63,7 @@ def format_url(url):
     else:
         query = "?"
         for piece in u.query.split("&"):
+            print(piece)
             k, v = piece.split("=")
             if k in settings.allowed_params:
                 query += "{k}={v}&".format(**locals())
@@ -74,7 +76,7 @@ def log(msg):
     # global logging function
     if settings.log_stdout:
         try:
-            print "{}: {}".format(datetime.now(), msg)
+            print("{}: {}".format(datetime.now(), msg))
         except UnicodeEncodeError:
             pass  # squash logging errors in case of non-ascii text
 
@@ -110,4 +112,4 @@ def dequeue_url():
 if __name__ == '__main__':
     # test proxy server IP masking
     r = make_request('https://api.ipify.org?format=json', return_soup=False)
-    print r.text
+    print(r.text)

@@ -48,6 +48,7 @@ def fetch_listing():
 
     global crawl_time
     url = dequeue_url()
+    print(url)
     if not url:
         log("WARNING: No URLs found in the queue. Retrying...")
         pile.spawn(fetch_listing)

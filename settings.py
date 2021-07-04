@@ -4,11 +4,11 @@ current_dir = os.path.dirname(os.path.realpath(__file__))
 
 # Database
 database = "amazon_crawler"
-host = ""
-user = ""
-
+host = "localhost"
+user = "postgres"
+password = "12345678"
 # Redis
-redis_host = ""
+redis_host = "localhost"
 redis_port = 6379
 redis_db = 0
 
